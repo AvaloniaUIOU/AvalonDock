@@ -19,9 +19,9 @@
 			window.Window1.Float();
 			Assert.IsTrue(window.Window1.IsFloating);
 			var layoutSerializer = new XmlLayoutSerializer(window.dockingManager);
-			layoutSerializer.Serialize(@".\AvalonDock.Layout.config");
+			layoutSerializer.Serialize(@"AvalonDock.Layout.config");
 			window.tabControl.SelectedIndex = 1;
-			layoutSerializer.Deserialize(@".\AvalonDock.Layout.config");
+			layoutSerializer.Deserialize(@"AvalonDock.Layout.config");
 			window.tabControl.SelectedIndex = 0;
 			window.Close();
 		}

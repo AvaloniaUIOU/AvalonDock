@@ -1,0 +1,6 @@
+<Project>
+	<PropertyGroup>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+		<XpfLicenseKey></XpfLicenseKey>
+	</PropertyGroup>
+</Project>

@@ -51,8 +51,7 @@ namespace TestApp
 			timer.Start();
 
 			this.DataContext = this;
-
-			winFormsHost.Child = new UserControl1();
+ 
 
 		}
 
@@ -141,8 +140,16 @@ namespace TestApp
 			//        if (prevContent != null)
 			//            args.Content = prevContent.Content;
 			//    };
-			using (var stream = new StreamReader(string.Format(@".\AvalonDock_{0}.config", fileName)))
-				serializer.Deserialize(stream);
+
+			try
+			{
+				using (var stream = new StreamReader(string.Format(@"AvalonDock_{0}.config", fileName)))
+					serializer.Deserialize(stream);
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex);
+			}
 		}
 
 		[SuppressMessage("Style", "IDE0063:使用简单的 \"using\" 语句", Justification = "<挂起>")]
@@ -150,7 +157,7 @@ namespace TestApp
 		{
 			string fileName = (sender as MenuItem).Header.ToString();
 			var serializer = new XmlLayoutSerializer(dockManager);
-			using (var stream = new StreamWriter(string.Format(@".\AvalonDock_{0}.config", fileName)))
+			using (var stream = new StreamWriter(string.Format(@"AvalonDock_{0}.config", fileName)))
 				serializer.Serialize(stream);
 		}
 

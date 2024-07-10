@@ -37,7 +37,7 @@
 		{
 			_mainWindow = new MainWindow();
 			_appVM = new ViewModels.AppViewModel(new AppLifeCycleViewModel());
-			LayoutLoaded = new LayoutLoader(@".\AvalonDock.Layout.config");
+			LayoutLoaded = new LayoutLoader(@"AvalonDock.Layout.config");
 		}
 		#endregion constructors
 

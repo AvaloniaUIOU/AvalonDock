@@ -216,18 +216,28 @@ namespace AvalonDock
 		public delegate int HookProc(int code, IntPtr wParam,
 			IntPtr lParam);
 
-		[DllImport("user32.dll")]
-		public static extern IntPtr SetWindowsHookEx(HookType code,
+		// [DllImport("user32.dll")]
+		// public static extern IntPtr SetWindowsHookEx(HookType code,
+		// 	HookProc func,
+		// 	IntPtr hInstance,
+		// 	int threadID);
+		//
+		// [DllImport("user32.dll")]
+		// public static extern int UnhookWindowsHookEx(IntPtr hhook);
+		//
+		// [DllImport("user32.dll")]
+		// public static extern int CallNextHookEx(IntPtr hhook,
+		// 	int code, IntPtr wParam, IntPtr lParam);
+
+		public static IntPtr SetWindowsHookEx(HookType code,
 			HookProc func,
 			IntPtr hInstance,
-			int threadID);
+			int threadID) => 1;
 
-		[DllImport("user32.dll")]
-		public static extern int UnhookWindowsHookEx(IntPtr hhook);
+		public static int UnhookWindowsHookEx(IntPtr hhook) => 1;
 
-		[DllImport("user32.dll")]
-		public static extern int CallNextHookEx(IntPtr hhook,
-			int code, IntPtr wParam, IntPtr lParam);
+		public static int CallNextHookEx(IntPtr hhook,
+			int code, IntPtr wParam, IntPtr lParam) => 1;
 
 		[Serializable, StructLayout(LayoutKind.Sequential)]
 		internal struct RECT

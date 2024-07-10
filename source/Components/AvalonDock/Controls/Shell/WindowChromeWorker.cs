@@ -225,6 +225,8 @@ namespace Microsoft.Windows.Shell
 
 		private void _FixupFrameworkIssues()
 		{
+			return;
+			
 			Assert.IsNotNull(_chromeInfo);
 			Assert.IsNotNull(_window);
 
@@ -290,6 +292,8 @@ namespace Microsoft.Windows.Shell
 		[SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 		private void _FixupWindows7Issues()
 		{
+			return;
+			
 			if (_blackGlassFixupAttemptCount > 5)
 			{
 				// Don't keep trying if there's an endemic problem with this.
@@ -301,8 +305,8 @@ namespace Microsoft.Windows.Shell
 			var success = false;
 			try
 			{
-				var dti = NativeMethods.DwmGetCompositionTimingInfo(_hwnd);
-				success = dti != null;
+				// var dti = NativeMethods.DwmGetCompositionTimingInfo(_hwnd);
+				// success = dti != null;
 			}
 			catch (Exception)
 			{

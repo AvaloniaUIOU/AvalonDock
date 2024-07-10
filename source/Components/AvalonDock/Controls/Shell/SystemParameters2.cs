@@ -30,8 +30,7 @@ namespace Microsoft.Windows.Shell
 		[ThreadStatic]
 		private static readonly SystemParameters2 _threadLocalSingleton;
 
-		private MessageWindow _messageHwnd;
-
+ 
 		private bool _isGlassEnabled;
 		private Color _glassColor;
 		private SolidColorBrush _glassColorBrush;
@@ -151,46 +150,48 @@ namespace Microsoft.Windows.Shell
 		[SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
 		private void _InitializeCaptionButtonLocation()
 		{
-			// There is a completely different way to do this on XP.
-			if (!Utility.IsOSVistaOrNewer || !NativeMethods.IsThemeActive())
-			{
-				_LegacyInitializeCaptionButtonLocation();
-				return;
-			}
-
-			var tbix = new TITLEBARINFOEX { cbSize = Marshal.SizeOf(typeof(TITLEBARINFOEX)) };
-			var lParam = Marshal.AllocHGlobal(tbix.cbSize);
-			try
-			{
-				Marshal.StructureToPtr(tbix, lParam, false);
-				// This might flash a window in the taskbar while being calculated.
-				// WM_GETTITLEBARINFOEX doesn't work correctly unless the window is visible while processing.
-				NativeMethods.ShowWindow(_messageHwnd.Handle, SW.SHOW);
-				NativeMethods.SendMessage(_messageHwnd.Handle, WM.GETTITLEBARINFOEX, IntPtr.Zero, lParam);
-				tbix = (TITLEBARINFOEX)Marshal.PtrToStructure(lParam, typeof(TITLEBARINFOEX));
-			}
-			finally
-			{
-				NativeMethods.ShowWindow(_messageHwnd.Handle, SW.HIDE);
-				Utility.SafeFreeHGlobal(ref lParam);
-			}
-
-			// TITLEBARINFOEX has information relative to the screen.  We need to convert the containing rect
-			// to instead be relative to the top-right corner of the window.
-			var rcAllCaptionButtons = RECT.Union(tbix.rgrect_CloseButton, tbix.rgrect_MinimizeButton);
-			// For all known themes, the RECT for the maximize box shouldn't add anything to the union of the minimize and close boxes.
-			Assert.AreEqual(rcAllCaptionButtons, RECT.Union(rcAllCaptionButtons, tbix.rgrect_MaximizeButton));
-
-			var rcWindow = NativeMethods.GetWindowRect(_messageHwnd.Handle);
-
-			// Reorient the Top/Right to be relative to the top right edge of the Window.
-			var deviceCaptionLocation = new Rect(
-				rcAllCaptionButtons.Left - rcWindow.Width - rcWindow.Left,
-				rcAllCaptionButtons.Top - rcWindow.Top,
-				rcAllCaptionButtons.Width,
-				rcAllCaptionButtons.Height);
-			var logicalCaptionLocation = DpiHelper.DeviceRectToLogical(deviceCaptionLocation);
-			WindowCaptionButtonsLocation = logicalCaptionLocation;
+			return;
+			//
+			// // There is a completely different way to do this on XP.
+			// if (!Utility.IsOSVistaOrNewer || !NativeMethods.IsThemeActive())
+			// {
+			// 	_LegacyInitializeCaptionButtonLocation();
+			// 	return;
+			// }
+			//
+			// var tbix = new TITLEBARINFOEX { cbSize = Marshal.SizeOf(typeof(TITLEBARINFOEX)) };
+			// var lParam = Marshal.AllocHGlobal(tbix.cbSize);
+			// try
+			// {
+			// 	// Marshal.StructureToPtr(tbix, lParam, false);
+			// 	// // This might flash a window in the taskbar while being calculated.
+			// 	// // WM_GETTITLEBARINFOEX doesn't work correctly unless the window is visible while processing.
+			// 	// NativeMethods.ShowWindow(_messageHwnd.Handle, SW.SHOW);
+			// 	// NativeMethods.SendMessage(_messageHwnd.Handle, WM.GETTITLEBARINFOEX, IntPtr.Zero, lParam);
+			// 	// tbix = (TITLEBARINFOEX)Marshal.PtrToStructure(lParam, typeof(TITLEBARINFOEX));
+			// }
+			// finally
+			// {
+			// 	// NativeMethods.ShowWindow(_messageHwnd.Handle, SW.HIDE);
+			// 	// Utility.SafeFreeHGlobal(ref lParam);
+			// }
+			//
+			// // TITLEBARINFOEX has information relative to the screen.  We need to convert the containing rect
+			// // to instead be relative to the top-right corner of the window.
+			// var rcAllCaptionButtons = RECT.Union(tbix.rgrect_CloseButton, tbix.rgrect_MinimizeButton);
+			// // For all known themes, the RECT for the maximize box shouldn't add anything to the union of the minimize and close boxes.
+			// Assert.AreEqual(rcAllCaptionButtons, RECT.Union(rcAllCaptionButtons, tbix.rgrect_MaximizeButton));
+			//
+			// var rcWindow = NativeMethods.GetWindowRect(_messageHwnd.Handle);
+			//
+			// // Reorient the Top/Right to be relative to the top right edge of the Window.
+			// var deviceCaptionLocation = new Rect(
+			// 	rcAllCaptionButtons.Left - rcWindow.Width - rcWindow.Left,
+			// 	rcAllCaptionButtons.Top - rcWindow.Top,
+			// 	rcAllCaptionButtons.Width,
+			// 	rcAllCaptionButtons.Height);
+			// var logicalCaptionLocation = DpiHelper.DeviceRectToLogical(deviceCaptionLocation);
+			// WindowCaptionButtonsLocation = logicalCaptionLocation;
 		}
 
 		private void _UpdateCaptionButtonLocation(IntPtr wParam, IntPtr lParam)
@@ -290,47 +291,47 @@ namespace Microsoft.Windows.Shell
 		/// </summary>
 		private SystemParameters2()
 		{
-			// This window gets used for calculations about standard caption button locations
-			// so it has WS_OVERLAPPEDWINDOW as a style to give it normal caption buttons.
-			// This window may be shown during calculations of caption bar information, so create it at a location that's likely offscreen.
-			_messageHwnd = new MessageWindow((CS)0, WS.OVERLAPPEDWINDOW | WS.DISABLED, (WS_EX)0, new Rect(-16000, -16000, 100, 100), "", _WndProc);
-			_messageHwnd.Dispatcher.ShutdownStarted += (sender, e) => Utility.SafeDispose(ref _messageHwnd);
-
-			// Fixup the default values of the DPs.
-			_InitializeIsGlassEnabled();
-			_InitializeGlassColor();
-			_InitializeCaptionHeight();
-			_InitializeWindowNonClientFrameThickness();
-			_InitializeWindowResizeBorderThickness();
-			_InitializeCaptionButtonLocation();
-			_InitializeSmallIconSize();
-			_InitializeHighContrast();
-			_InitializeThemeInfo();
-			// WindowCornerRadius isn't exposed by true system parameters, so it requires the theme to be initialized first.
-			_InitializeWindowCornerRadius();
-
-			_UpdateTable = new Dictionary<WM, List<_SystemMetricUpdate>>
-			{
-				{ WM.THEMECHANGED,
-					new List<_SystemMetricUpdate>
-					{
-						_UpdateThemeInfo,
-						_UpdateHighContrast,
-						_UpdateWindowCornerRadius,
-						_UpdateCaptionButtonLocation, } },
-				{ WM.SETTINGCHANGE,
-					new List<_SystemMetricUpdate>
-					{
-						_UpdateCaptionHeight,
-						_UpdateWindowResizeBorderThickness,
-						_UpdateSmallIconSize,
-						_UpdateHighContrast,
-						_UpdateWindowNonClientFrameThickness,
-						_UpdateCaptionButtonLocation, } },
-				{ WM.DWMNCRENDERINGCHANGED, new List<_SystemMetricUpdate> { _UpdateIsGlassEnabled } },
-				{ WM.DWMCOMPOSITIONCHANGED, new List<_SystemMetricUpdate> { _UpdateIsGlassEnabled } },
-				{ WM.DWMCOLORIZATIONCOLORCHANGED, new List<_SystemMetricUpdate> { _UpdateGlassColor } },
-			};
+			// // This window gets used for calculations about standard caption button locations
+			// // so it has WS_OVERLAPPEDWINDOW as a style to give it normal caption buttons.
+			// // This window may be shown during calculations of caption bar information, so create it at a location that's likely offscreen.
+			// _messageHwnd = new MessageWindow((CS)0, WS.OVERLAPPEDWINDOW | WS.DISABLED, (WS_EX)0, new Rect(-16000, -16000, 100, 100), "", _WndProc);
+			// _messageHwnd.Dispatcher.ShutdownStarted += (sender, e) => Utility.SafeDispose(ref _messageHwnd);
+			//
+			// // Fixup the default values of the DPs.
+			// _InitializeIsGlassEnabled();
+			// _InitializeGlassColor();
+			// _InitializeCaptionHeight();
+			// _InitializeWindowNonClientFrameThickness();
+			// _InitializeWindowResizeBorderThickness();
+			// _InitializeCaptionButtonLocation();
+			// _InitializeSmallIconSize();
+			// _InitializeHighContrast();
+			// _InitializeThemeInfo();
+			// // WindowCornerRadius isn't exposed by true system parameters, so it requires the theme to be initialized first.
+			// _InitializeWindowCornerRadius();
+			//
+			// _UpdateTable = new Dictionary<WM, List<_SystemMetricUpdate>>
+			// {
+			// 	{ WM.THEMECHANGED,
+			// 		new List<_SystemMetricUpdate>
+			// 		{
+			// 			_UpdateThemeInfo,
+			// 			_UpdateHighContrast,
+			// 			_UpdateWindowCornerRadius,
+			// 			_UpdateCaptionButtonLocation, } },
+			// 	{ WM.SETTINGCHANGE,
+			// 		new List<_SystemMetricUpdate>
+			// 		{
+			// 			_UpdateCaptionHeight,
+			// 			_UpdateWindowResizeBorderThickness,
+			// 			_UpdateSmallIconSize,
+			// 			_UpdateHighContrast,
+			// 			_UpdateWindowNonClientFrameThickness,
+			// 			_UpdateCaptionButtonLocation, } },
+			// 	{ WM.DWMNCRENDERINGCHANGED, new List<_SystemMetricUpdate> { _UpdateIsGlassEnabled } },
+			// 	{ WM.DWMCOMPOSITIONCHANGED, new List<_SystemMetricUpdate> { _UpdateIsGlassEnabled } },
+			// 	{ WM.DWMCOLORIZATIONCOLORCHANGED, new List<_SystemMetricUpdate> { _UpdateGlassColor } },
+			// };
 		}
 
 		public static SystemParameters2 Current => _threadLocalSingleton ?? new SystemParameters2();

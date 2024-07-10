@@ -7,5 +7,9 @@ namespace AvalonDock.MVVMTestApp
 	/// </summary>
 	public partial class App : Application
 	{
+		static App()
+		{
+			AvaloniaUI.Xpf.WinApiShim.WinApiShimSetup.AutoEnable();
+		}
 	}
 }

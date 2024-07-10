@@ -15,7 +15,6 @@
     xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TestApp"
-    xmlns:winformsIntegration="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
     Title="MainWindow"
     Width="525"
     Height="350"
@@ -86,7 +85,7 @@
                             CanHide="False"
                             ContentId="WinFormsWindow"
                             ToolTip="My WinForms Tool">
-                            <winformsIntegration:WindowsFormsHost x:Name="winFormsHost" Background="White" />
+	                        <TextBlock>WinFormsHost is not supported on Avalonia XPF.</TextBlock>
                         </LayoutAnchorable>
                     </LayoutAnchorablePane>
                     <LayoutDocumentPaneGroup>

@@ -205,7 +205,7 @@
 		internal void OnSaveLayout(object parameter = null)
 		{
 			var layoutSerializer = new XmlLayoutSerializer(dockManager);
-			layoutSerializer.Serialize(@".\AvalonDock.Layout.config");
+			layoutSerializer.Serialize(@"AvalonDock.Layout.config");
 		}
 
 		#endregion

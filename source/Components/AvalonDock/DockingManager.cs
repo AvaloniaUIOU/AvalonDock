@@ -1806,8 +1806,15 @@ namespace AvalonDock
 
 			LayoutFloatingWindowControlCreated?.Invoke(this, new LayoutFloatingWindowControlCreatedEventArgs(fwc));
 
-			fwc.AttachDrag();
-			fwc.Show();
+			try
+			{
+				fwc.AttachDrag();
+				fwc.Show();
+			}
+			catch (ObjectDisposedException)
+			{
+				Debug.WriteLine("Intercepted ObjectDisposedException from DockingManager.StartDraggingFloatingWindowForPane");
+			}
 		}
 
 		internal IEnumerable<LayoutFloatingWindowControl> GetFloatingWindowsByZOrder()
@@ -2137,9 +2144,7 @@ namespace AvalonDock
 
 			if (DesignerProperties.GetIsInDesignMode(this)) return;
 			_autoHideWindowManager?.HideAutoWindow();
-
-			AutoHideWindow?.Dispose();
-
+			
 			foreach (var fw in _fwList.ToArray())
 			{
 				////fw.Owner = null;
@@ -2173,7 +2178,6 @@ namespace AvalonDock
 			else
 				_autoHideWindowManager = new AutoHideWindowManager(this);
 
-			AutoHideWindow?.Dispose();
 			SetAutoHideWindow(new LayoutAutoHideWindowControl());
 		}
 

@@ -28,7 +28,7 @@ namespace AvalonDock.Controls
 	/// The <see cref="LayoutAutoHideWindowControl"/> pops out of a side panel
 	/// when the user clicks on a <see cref="LayoutAnchorControl"/> of a particular anchored item.
 	/// </summary>
-	public class LayoutAutoHideWindowControl : HwndHost, ILayoutControl
+	public class LayoutAutoHideWindowControl : Border, ILayoutControl
 	{
 		#region fields
 
@@ -36,8 +36,6 @@ namespace AvalonDock.Controls
 
 		private LayoutAnchorControl _anchor;
 		private LayoutAnchorable _model;
-		private HwndSource _internalHwndSource = null;
-		private IntPtr parentWindowHandle;
 		private readonly ContentPresenter _internalHostPresenter = new ContentPresenter();
 		private Grid _internalGrid = null;
 		private AnchorSide _side;
@@ -119,14 +117,13 @@ namespace AvalonDock.Controls
 			_model = anchor.Model as LayoutAnchorable;
 			_side = (anchor.Model.Parent.Parent as LayoutAnchorSide).Side;
 			_manager = _model.Root.Manager;
+      		Child = _internalHostPresenter;
 			CreateInternalGrid();
 			_model.PropertyChanged += _model_PropertyChanged;
 			SetLayoutTransform();
 			StartListeningToViewboxZoomChange();
 			Visibility = Visibility.Visible;
 			InvalidateMeasure();
-			UpdateWindowPos();
-			Win32Helper.BringWindowToTop(_internalHwndSource.Handle);
 		}
 
 		internal void Hide()
@@ -163,45 +160,15 @@ namespace AvalonDock.Controls
 		#endregion Internal Methods
 
 		#region Overrides
-
-		/// <inheritdoc />
-		protected override HandleRef BuildWindowCore(HandleRef hwndParent)
-		{
-			parentWindowHandle = hwndParent.Handle;
-			_internalHwndSource = new HwndSource(new HwndSourceParameters
-			{
-				ParentWindow = hwndParent.Handle,
-				WindowStyle = Win32Helper.WS_CHILD | Win32Helper.WS_VISIBLE | Win32Helper.WS_CLIPSIBLINGS | Win32Helper.WS_CLIPCHILDREN,
-				Width = 0,
-				Height = 0,
-			})
-			{ RootVisual = _internalHostPresenter };
-			AutomationProperties.SetName(_internalHostPresenter, "InternalWindowHost");
-			AddLogicalChild(_internalHostPresenter);
-			Win32Helper.BringWindowToTop(_internalHwndSource.Handle);
-			return new HandleRef(this, _internalHwndSource.Handle);
-		}
-
-		/// <inheritdoc />
-		protected override void DestroyWindowCore(HandleRef hwnd)
-		{
-			if (_internalHwndSource == null) return;
-			_internalHwndSource.Dispose();
-			_internalHwndSource = null;
-		}
-
-		/// <inheritdoc />
-		protected override bool HasFocusWithinCore() => false;
-
+ 
 		/// <inheritdoc />
 		protected override System.Collections.IEnumerator LogicalChildren => _internalHostPresenter == null ? new UIElement[] { }.GetEnumerator() : new UIElement[] { _internalHostPresenter }.GetEnumerator();
 
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size constraint)
 		{
-			if (_internalHostPresenter == null) return base.MeasureOverride(constraint);
+			base.MeasureOverride(constraint);
 			_internalHostPresenter.Measure(constraint);
-			//return base.MeasureOverride(constraint);
 			return _internalHostPresenter.DesiredSize;
 		}
 
