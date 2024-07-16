@@ -37,7 +37,6 @@ namespace AvalonDock.Controls
 	/// <seealso cref="ILayoutControl"/>
 	public abstract class LayoutFloatingWindowControl : Window, ILayoutControl
 	{
-		#region fields
 		private ResourceDictionary currentThemeResourceDictionary; // = null
 		private bool _isInternalChange; //false
 		private readonly ILayoutElement _model;
@@ -54,8 +53,6 @@ namespace AvalonDock.Controls
 		/// <see cref="TotalMargin"/>
 		private bool _isTotalMarginSet = false;
 
-		#endregion fields
-
 		#region Constructors
 
 		static LayoutFloatingWindowControl()
@@ -71,6 +68,7 @@ namespace AvalonDock.Controls
 			Unloaded += OnUnloaded;
 			Closing += OnClosing;
 			SizeChanged += OnSizeChanged;
+			WindowStyle = WindowStyle.None;
 			_model = model;
 		}
 
@@ -350,9 +348,6 @@ namespace AvalonDock.Controls
 			else
 			{
 				CaptureMouse();
-				var windowHandle = new WindowInteropHelper(this).Handle;
-				var lParam = new IntPtr(((int)Left & 0xFFFF) | ((int)Top << 16));
-				Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN, new IntPtr(Win32Helper.HT_CAPTION), lParam);
 			}
 		}
 
