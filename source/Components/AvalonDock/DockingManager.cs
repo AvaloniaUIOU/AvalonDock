@@ -1843,6 +1843,7 @@ namespace AvalonDock
 			var windowParentHandle = parentWindow != null ? new WindowInteropHelper(parentWindow).Handle : Process.GetCurrentProcess().MainWindowHandle;
 			var b = Win32Helper.GetWindowZOrder(windowParentHandle, out var mainWindow_z);
 			var currentHandle = Win32Helper.GetWindow(windowParentHandle, (uint)Win32Helper.GetWindow_Cmd.GW_HWNDFIRST);
+#if !AVALONIA_XPF
 			while (currentHandle != IntPtr.Zero)
 			{
 				for (int i = 0; i < _fwList.Count; i++)
@@ -1868,6 +1869,17 @@ namespace AvalonDock
 			overlayWindowHosts.AddRange(topFloatingWindows);
 			overlayWindowHosts.Add(this);
 			overlayWindowHosts.AddRange(bottomFloatingWindows);
+#else
+			for (int i = 0; i < _fwList.Count; i++)
+			{
+				var fw = _fwList[i];
+				if (fw is IOverlayWindowHost host && fw != dragFloatingWindow && fw.IsVisible)
+				{
+					overlayWindowHosts.Add(host);
+				}
+			}
+			overlayWindowHosts.Add(this);
+#endif
 		}
 
 		internal void RemoveFloatingWindow(LayoutFloatingWindowControl floatingWindow)
@@ -1997,7 +2009,7 @@ namespace AvalonDock
 
 		internal void ExecuteContentActivateCommand(LayoutContent content) => content.IsActive = true;
 
-		#endregion Internal Methods
+#endregion Internal Methods
 
 		#region Overrides
 
