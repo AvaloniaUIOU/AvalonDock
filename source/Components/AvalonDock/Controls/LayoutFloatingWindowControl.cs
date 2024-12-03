@@ -19,6 +19,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 using AvalonDock.Layout;
 using AvalonDock.Themes;
@@ -71,7 +72,21 @@ namespace AvalonDock.Controls
 			WindowStyle = WindowStyle.None;
 			_model = model;
 		}
+		
+		public new void Show()
+		{					
+			var mousePosition = (Win32Helper.GetMousePosition());
 
+			this.Left = mousePosition.X;
+			this.Top = mousePosition.Y;
+			
+			base.Show();
+
+			Dispatcher.BeginInvoke(DispatcherPriority.Render, () => {
+				base.Focus();
+			});
+			
+		}
 		protected LayoutFloatingWindowControl(ILayoutElement model, bool isContentImmutable)
 		  : this(model)
 		{
@@ -347,7 +362,9 @@ namespace AvalonDock.Controls
 			}
 			else
 			{
-				CaptureMouse();
+				var windowHandle = new WindowInteropHelper(this).Handle;
+				var lParam = new IntPtr(((int)Left & 0xFFFF) | ((int)Top << 16));
+				Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN, new IntPtr(Win32Helper.HT_CAPTION), lParam);
 			}
 		}
 
@@ -580,6 +597,7 @@ namespace AvalonDock.Controls
 			// Restore maximize state
 			var maximized = Model.Descendents().OfType<ILayoutElementForFloatingWindow>().Any(l => l.IsMaximized);
 			UpdateMaximizedState(maximized);
+			Activate();
 		}
 
 		internal void UpdateOwnership()

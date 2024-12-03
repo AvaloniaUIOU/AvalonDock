@@ -11,6 +11,12 @@
     Copyright Microsoft Corporation. All Rights Reserved.
 \**************************************************************************/
 
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using AvaloniaUI.Xpf.WpfAbstractions;
+
+
 namespace Microsoft.Windows.Shell
 {
 	using Standard;
@@ -221,6 +227,84 @@ namespace Microsoft.Windows.Shell
 			_UpdateFrameState(true);
 
 			NativeMethods.SetWindowPos(_hwnd, IntPtr.Zero, 0, 0, 0, 0, _SwpFlags);
+
+
+			var avWin = XpfWpfAbstraction.GetAvaloniaWindowForWindow(_window);
+
+			if (avWin != null)
+			{
+				avWin.PointerPressed += (sender, args) => {
+					var mousePositionAv = args.GetPosition(avWin);
+					var mousePosition = new Point(mousePositionAv.X, mousePositionAv.Y);
+					var windowRect = new Rect(0, 0, avWin.Bounds.Width, avWin.Bounds.Height);
+					_borderHitType = GetBorderHitType(windowRect, mousePosition, _chromeInfo.ResizeBorderThickness);
+					if (_borderHitType != BorderHitType.None)
+						ResizeWindow(avWin, args);
+				};
+			}
+		}
+
+		private void ResizeWindow(Avalonia.Controls.Window window, PointerPressedEventArgs args)
+		{ 
+			WindowEdge? edge = _borderHitType switch
+			{
+				BorderHitType.Left => WindowEdge.West,
+				BorderHitType.Right => WindowEdge.East,
+				BorderHitType.Top => WindowEdge.North,
+				BorderHitType.Bottom => WindowEdge.South,
+				BorderHitType.TopLeft => WindowEdge.NorthWest,
+				BorderHitType.TopRight => WindowEdge.NorthEast,
+				BorderHitType.BottomLeft => WindowEdge.SouthWest,
+				BorderHitType.BottomRight => WindowEdge.SouthEast,
+				_ => null
+			};
+
+			if (edge.HasValue)
+			{
+				window.BeginResizeDrag(edge.Value, args);
+			}
+		}
+		
+		
+		private void ResizeLeft(Avalonia.Controls.Window window, double deltaX)
+		{
+			double newWidth = window.Width - deltaX;
+			var curY = window.Position.Y;
+			if (newWidth > window.MinWidth)
+			{
+				window.Width = newWidth;
+				window.Position = new PixelPoint((int)deltaX,curY);
+			}
+		}
+
+		private void ResizeTop(Avalonia.Controls.Window window, double deltaY)
+		{
+			double newHeight = window.Height - deltaY;
+			var curX = window.Position.X;
+
+			if (newHeight > window.MinHeight)
+			{
+				window.Height = newHeight;
+				window.Position = new PixelPoint(curX, (int)deltaY);
+			}
+		}
+
+		private void ResizeRight(Avalonia.Controls.Window window, double deltaX)
+		{
+			double newWidth = window.Width + deltaX;
+			if (newWidth > window.MinWidth)
+			{
+				window.Width = newWidth;
+			}
+		}
+
+		private void ResizeBottom(Avalonia.Controls.Window window, double deltaY)
+		{
+			double newHeight = window.Height + deltaY;
+			if (newHeight > window.MinHeight)
+			{
+				window.Height = newHeight;
+			}
 		}
 
 		private void _FixupFrameworkIssues()
@@ -373,7 +457,44 @@ namespace Microsoft.Windows.Shell
 		}
 
 		#region WindowProc and Message Handlers
+		public enum BorderHitType
+		{
+			None,
+			Left,
+			Top,
+			Right,
+			Bottom,
+			TopLeft,
+			TopRight,
+			BottomLeft,
+			BottomRight
+		}
 
+		public static BorderHitType GetBorderHitType(Rect rect, Point point, Thickness thickness)
+		{
+			if (!rect.Contains(point))
+				return BorderHitType.None;
+
+			bool isLeft = point.X <= rect.Left + thickness.Left;
+			bool isTop = point.Y <= rect.Top + thickness.Top;
+			bool isRight = point.X >= rect.Right - thickness.Right;
+			bool isBottom = point.Y >= rect.Bottom - thickness.Bottom;
+
+			// Check corners first
+			if (isLeft && isTop) return BorderHitType.TopLeft;
+			if (isRight && isTop) return BorderHitType.TopRight;
+			if (isLeft && isBottom) return BorderHitType.BottomLeft;
+			if (isRight && isBottom) return BorderHitType.BottomRight;
+
+			// Then check edges
+			if (isLeft) return BorderHitType.Left;
+			if (isTop) return BorderHitType.Top;
+			if (isRight) return BorderHitType.Right;
+			if (isBottom) return BorderHitType.Bottom;
+
+			return BorderHitType.None;
+		}
+		
 		private IntPtr _WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
 		{
 			// Only expecting messages for our cached HWND.
@@ -925,6 +1046,8 @@ namespace Microsoft.Windows.Shell
 			{ HT.LEFT,       HT.CLIENT,  HT.RIGHT       },
 			{ HT.BOTTOMLEFT, HT.BOTTOM,  HT.BOTTOMRIGHT },
 		};
+ 
+		private BorderHitType _borderHitType;
 
 		private HT _HitTestNca(Rect windowPosition, Point mousePosition)
 		{
