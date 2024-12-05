@@ -1805,16 +1805,9 @@ namespace AvalonDock
 			if (fwc == null) return;
 
 			LayoutFloatingWindowControlCreated?.Invoke(this, new LayoutFloatingWindowControlCreatedEventArgs(fwc));
-
-			try
-			{
+ 
 				fwc.AttachDrag();
-				fwc.Show();
-			}
-			catch (ObjectDisposedException)
-			{
-				Debug.WriteLine("Intercepted ObjectDisposedException from DockingManager.StartDraggingFloatingWindowForPane");
-			}
+				fwc.Show(); 
 		}
 
 		internal IEnumerable<LayoutFloatingWindowControl> GetFloatingWindowsByZOrder()

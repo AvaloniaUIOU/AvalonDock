@@ -24,6 +24,7 @@ using AvalonDock.Layout;
 using AvalonDock.Themes;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Threading;
 
 namespace AvalonDock.Controls
 {
@@ -318,15 +319,8 @@ namespace AvalonDock.Controls
 			Left = mousePosition.X;
 			Top = mousePosition.Y;
 			ShowActivated = true;
-			
-			try
-			{
-				base.Show();
-			}
-			catch (ObjectDisposedException)
-			{
-				Debug.WriteLine("Intercepted ObjectDisposedException from LayoutFloatingWindow.Show");
-			}
+			 
+				base.Show(); 
 			
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
 			{
@@ -679,7 +673,15 @@ namespace AvalonDock.Controls
 			_attachDrag = false;
 			Show();
 			var lParam = new IntPtr(((int)mousePosition.X & 0xFFFF) | ((int)mousePosition.Y << 16));
-			Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN, new IntPtr(Win32Helper.HT_CAPTION), lParam);
+
+			new Thread(_ =>
+			{
+				Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
+				{
+					Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN,
+						new IntPtr(Win32Helper.HT_CAPTION), lParam);
+				}); 
+			}).Start();
 		}
 
 		private void UpdatePositionAndSizeOfPanes()
