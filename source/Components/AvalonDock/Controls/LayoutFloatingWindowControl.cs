@@ -22,6 +22,8 @@ using System.Windows.Media;
 
 using AvalonDock.Layout;
 using AvalonDock.Themes;
+using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace AvalonDock.Controls
 {
@@ -302,6 +304,32 @@ namespace AvalonDock.Controls
 		#endregion Properties
 
 		#region Internal Methods
+
+		public new void Show()
+		{
+			if (_isClosing) return;
+
+			var mousePosition = Win32Helper.GetMousePosition();
+
+			Left = mousePosition.X;
+			Top = mousePosition.Y;
+			ShowActivated = true;
+			
+			try
+			{
+				base.Show();
+			}
+			catch (ObjectDisposedException)
+			{
+				Debug.WriteLine("Intercepted ObjectDisposedException from LayoutFloatingWindow.Show");
+			}
+			
+			Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
+			{
+				Focus();
+			});
+		}
+
 		/// <summary>Is Invoked when AvalonDock's WPF Theme changes via the <see cref="DockingManager.OnThemeChanged()"/> method.</summary>
 		/// <param name="oldTheme"></param>
 		internal virtual void UpdateThemeResources(Theme oldTheme = null)
