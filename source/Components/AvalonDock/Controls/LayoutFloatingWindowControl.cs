@@ -320,12 +320,13 @@ namespace AvalonDock.Controls
 			Top = mousePosition.Y;
 			ShowActivated = true;
 			 
-				base.Show(); 
+			base.Show(); 
 			
-			Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
-			{
-				Focus();
-			});
+			Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+			{ 
+				Focus(); 
+			}, Avalonia.Threading.DispatcherPriority.Default); 
+				 
 		}
 
 		/// <summary>Is Invoked when AvalonDock's WPF Theme changes via the <see cref="DockingManager.OnThemeChanged()"/> method.</summary>
@@ -673,15 +674,12 @@ namespace AvalonDock.Controls
 			_attachDrag = false;
 			Show();
 			var lParam = new IntPtr(((int)mousePosition.X & 0xFFFF) | ((int)mousePosition.Y << 16));
-
-			new Thread(_ =>
+ 
+			Avalonia.Threading.Dispatcher.UIThread.Post(() =>
 			{
-				Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
-				{
-					Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN,
-						new IntPtr(Win32Helper.HT_CAPTION), lParam);
-				}); 
-			}).Start();
+				Win32Helper.SendMessage(windowHandle, Win32Helper.WM_NCLBUTTONDOWN,
+					new IntPtr(Win32Helper.HT_CAPTION), lParam);
+			}, Avalonia.Threading.DispatcherPriority.Default); 
 		}
 
 		private void UpdatePositionAndSizeOfPanes()
