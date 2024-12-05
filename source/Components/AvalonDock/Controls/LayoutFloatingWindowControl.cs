@@ -70,7 +70,11 @@ namespace AvalonDock.Controls
 			Unloaded += OnUnloaded;
 			Closing += OnClosing;
 			SizeChanged += OnSizeChanged;
-			WindowStyle = WindowStyle.None;
+
+			// This ensures that floating windows
+			// can be resized on macOS.
+			WindowStyle = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? WindowStyle.ToolWindow : WindowStyle.None;
+
 			_model = model;
 		}
 
