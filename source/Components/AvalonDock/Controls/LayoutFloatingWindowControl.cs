@@ -316,17 +316,15 @@ namespace AvalonDock.Controls
 
 			var mousePosition = Win32Helper.GetMousePosition();
 
-			Left = mousePosition.X;
-			Top = mousePosition.Y;
+			Left = mousePosition.X - 6 /* offset the drag window so that it hits it instead of empty space in case of macOS */;
+			Top = mousePosition.Y - 6;
+			// Add forced MinWidth here.
+			MinWidth = 200;
+			MinHeight = 100;
+
 			ShowActivated = true;
+			base.Show();
 			 
-			base.Show(); 
-			
-			Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-			{ 
-				Focus(); 
-			}, Avalonia.Threading.DispatcherPriority.Default); 
-				 
 		}
 
 		/// <summary>Is Invoked when AvalonDock's WPF Theme changes via the <see cref="DockingManager.OnThemeChanged()"/> method.</summary>
@@ -373,8 +371,7 @@ namespace AvalonDock.Controls
 				Activated += OnActivated;
 			}
 			else
-			{
-				CaptureMouse();
+			{ 
 			}
 		}
 

@@ -177,8 +177,11 @@ namespace AvalonDock.Layout
 		{
 			get => _isActive;
 			set
-			{
+			{	
+
 				if (value == _isActive) return;
+				Console.WriteLine($"{DateTime.Now:hh:mm:ss.FFFF} IsActive {value}");
+
 				RaisePropertyChanging(nameof(IsActive));
 				var oldValue = _isActive;
 				_isActive = value;
