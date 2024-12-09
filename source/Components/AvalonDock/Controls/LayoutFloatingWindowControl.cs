@@ -68,7 +68,7 @@ namespace AvalonDock.Controls
 			Unloaded += OnUnloaded;
 			Closing += OnClosing;
 			SizeChanged += OnSizeChanged;
-			WindowStyle = WindowStyle.None;
+			WindowStyle = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? WindowStyle.ToolWindow : WindowStyle.None;
 			_model = model;
 		}
 
