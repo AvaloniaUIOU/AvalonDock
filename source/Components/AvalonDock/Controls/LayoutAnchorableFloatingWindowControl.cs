@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-
+using System.Windows.Shell;
 using AvalonDock.Commands;
 using AvalonDock.Converters;
 using AvalonDock.Layout;
@@ -268,7 +268,6 @@ namespace AvalonDock.Controls
 						if (windowChrome != null)
 						{
 							if (OpenContextMenu()) handled = true;
-							windowChrome.ShowSystemMenu = _model.Root.Manager.ShowSystemMenu && !handled;
 						}
 					}
 					break;

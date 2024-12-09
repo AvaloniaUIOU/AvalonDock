@@ -1191,14 +1191,14 @@
 		<Setter Property="Background" Value="{DynamicResource {x:Static avalonDockAero:AeroColors.BaseColor7Key}}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static avalonDockAero:AeroColors.BaseColor14Key}}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="shell:WindowChrome.WindowChrome">
+		<Setter Property="WindowChrome.WindowChrome">
 			<Setter.Value>
-				<shell:WindowChrome
+				<WindowChrome
 					CaptionHeight="18"
 					CornerRadius="3"
 					GlassFrameThickness="0"
 					ResizeBorderThickness="10"
-					ShowSystemMenu="False" />
+					 />
 			</Setter.Value>
 		</Setter>
 		<Setter Property="Template">
@@ -1231,7 +1231,7 @@
 										<Button
 											x:Name="PART_PinMaximize"
 											Grid.Column="1"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.MaximizeWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1247,7 +1247,7 @@
 										<Button
 											x:Name="PART_PinRestore"
 											Grid.Column="1"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1263,7 +1263,7 @@
 										<Button
 											x:Name="PART_PinClose"
 											Grid.Column="2"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{Binding Path=CloseWindowCommand, RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
 											Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
@@ -1311,9 +1311,9 @@
 		<Setter Property="Background" Value="{DynamicResource {x:Static avalonDockAero:AeroColors.BaseColor5Key}}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static avalonDockAero:AeroColors.BaseColor16Key}}" />
 		<Setter Property="BorderThickness" Value="4" />
-		<Setter Property="shell:WindowChrome.WindowChrome">
+		<Setter Property="WindowChrome.WindowChrome">
 			<Setter.Value>
-				<shell:WindowChrome
+				<WindowChrome
 					CaptionHeight="18"
 					CornerRadius="7"
 					GlassFrameThickness="0"
@@ -1364,7 +1364,7 @@
 											VerticalAlignment="Center"
 											HorizontalContentAlignment="Center"
 											VerticalContentAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
 											DropDownContextMenuDataContext="{Binding Path=SingleContentLayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1385,7 +1385,7 @@
 											VerticalAlignment="Center"
 											HorizontalContentAlignment="Center"
 											VerticalContentAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.MaximizeWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1403,7 +1403,7 @@
 											Grid.Column="2"
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1421,7 +1421,7 @@
 											Grid.Column="3"
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{Binding HideWindowCommand, RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
 											Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
@@ -1580,9 +1580,9 @@
 		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
 		<Setter Property="SizeToContent" Value="WidthAndHeight" />
 		<Setter Property="ResizeMode" Value="NoResize" />
-		<!--<Setter Property="shell:WindowChrome.WindowChrome">
+		<!--<Setter Property="WindowChrome.WindowChrome">
          <Setter.Value>
-            <shell:WindowChrome
+            <WindowChrome
                     ResizeBorderThickness="10"
                     CaptionHeight="16"
                     CornerRadius="3,3,3,3"

@@ -1803,14 +1803,14 @@
 		<Setter Property="UseLayoutRounding" Value="True" />
 		<Setter Property="Background" Value="{DynamicResource {x:Static reskeys:ResourceKeys.FloatingDocumentWindowBackground}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static reskeys:ResourceKeys.FloatingDocumentWindowBorder}}" />
-        <Setter Property="shell:WindowChrome.WindowChrome">
+        <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <shell:WindowChrome
+                <WindowChrome
 					CaptionHeight="32"
 					CornerRadius="0"
 					GlassFrameThickness="0"
 					ResizeBorderThickness="10"
-					ShowSystemMenu="False" />
+					 />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
@@ -1855,7 +1855,7 @@
                                             Width="34"
 											Height="26"
 											VerticalAlignment="Top"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.MaximizeWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1879,7 +1879,7 @@
                                             Width="34"
 											Height="26"
                                             VerticalAlignment="Top"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -1902,7 +1902,7 @@
                                             Width="34"
 											Height="26"
 											VerticalAlignment="Top"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{Binding Path=CloseWindowCommand, RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
 											Style="{StaticResource AvalonDockThemeVs2013ButtonStyle}"
@@ -2073,9 +2073,9 @@
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="Background" Value="{DynamicResource {x:Static reskeys:ResourceKeys.FloatingToolWindowBackground}}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource {x:Static reskeys:ResourceKeys.FloatingToolWindowBorder}}" />
-		<Setter Property="shell:WindowChrome.WindowChrome">
+		<Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <shell:WindowChrome
+                <WindowChrome
 					CaptionHeight="21"
 					CornerRadius="0"
 					GlassFrameThickness="0"
@@ -2167,7 +2167,7 @@
 											Height="15"
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
 											DropDownContextMenuDataContext="{Binding Path=SingleContentLayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -2192,7 +2192,7 @@
 											Height="15"
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.MaximizeWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -2217,7 +2217,7 @@
 											Height="15"
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
 											CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
@@ -2243,7 +2243,7 @@
 											Height="15"
 											HorizontalAlignment="Center"
 											VerticalAlignment="Center"
-											shell:WindowChrome.IsHitTestVisibleInChrome="True"
+											WindowChrome.IsHitTestVisibleInChrome="True"
 											Command="{Binding HideWindowCommand, RelativeSource={RelativeSource TemplatedParent}}"
 											Focusable="False"
 											Style="{StaticResource AvalonDockThemeVs2013ButtonStyle}"
@@ -2554,9 +2554,9 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
         <Setter Property="SizeToContent" Value="WidthAndHeight" />
         <Setter Property="ResizeMode" Value="NoResize" />
-        <!--<Setter Property="shell:WindowChrome.WindowChrome">
+        <!--<Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <shell:WindowChrome CaptionHeight="16"
+                <WindowChrome CaptionHeight="16"
                                     GlassFrameThickness="4"
                                     ResizeBorderThickness="10" />
             </Setter.Value>
