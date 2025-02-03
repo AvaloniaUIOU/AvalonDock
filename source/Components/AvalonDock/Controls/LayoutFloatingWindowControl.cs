@@ -46,6 +46,7 @@ namespace AvalonDock.Controls
 		private DragService _dragService = null;
 		private bool _internalCloseFlag = false;
 		private bool _isClosing = false;
+		private DockingManager _parentManager;
 
 		/// <summary>
 		/// Is false until the margins have been found once.
@@ -574,6 +575,9 @@ namespace AvalonDock.Controls
 
 			this.UpdateOwnership();
 
+			_parentManager = Model.Root?.Manager;
+			_parentManager?.InternalAddLogicalChild(this);
+
 			_hwndSrc = PresentationSource.FromDependencyObject(this) as HwndSource;
 			_hwndSrcHook = FilterMessage;
 			_hwndSrc.AddHook(_hwndSrcHook);
@@ -596,6 +600,10 @@ namespace AvalonDock.Controls
 		private void OnUnloaded(object sender, RoutedEventArgs e)
 		{
 			Unloaded -= OnUnloaded;
+
+			_parentManager?.InternalRemoveLogicalChild(this);
+			_parentManager = null;
+
 			if (_hwndSrc == null) return;
 			_hwndSrc.RemoveHook(_hwndSrcHook);
 			InternalClose();
@@ -710,14 +718,14 @@ namespace AvalonDock.Controls
 			#region fields
 
 			private readonly LayoutFloatingWindowControl _owner;
- 
+
 			#endregion fields
 
 			#region Constructors
 
 			public FloatingWindowContentHost(LayoutFloatingWindowControl owner)
 			{
-				_owner = owner; 
+				_owner = owner;
 			} 
  
 		}
