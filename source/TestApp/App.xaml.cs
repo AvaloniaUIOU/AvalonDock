@@ -26,7 +26,7 @@ namespace TestApp
 
         static App()
         {
-	        AvaloniaUI.Xpf.WinApiShim.WinApiShimSetup.AutoEnable();
+	        AvaloniaUI.Xpf.WinApiShim.WinApiShimSetup.AddLibrary(typeof(AvalonDock.DockingManager).Assembly);
         }
     }
 }
