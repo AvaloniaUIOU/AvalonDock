@@ -1,26 +1,31 @@
 <Project Sdk="Xpf.Sdk/9999.0.0-localbuild">
 	<PropertyGroup>
 		<IncludeBrowser>true</IncludeBrowser>
+
 		<RootNamespace>TestApp</RootNamespace>
 		<TargetFrameworks>net10.0</TargetFrameworks>
 		<UseWPF>true</UseWPF>
 		<ApplicationIcon/>
 		<OutputType>Exe</OutputType>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<StartupObject/>
 		<AssemblyName>TestApp</AssemblyName>
-		<WasmBuildNative>true</WasmBuildNative>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(IncludeBrowser)' == 'true'">
 		<TargetFrameworks>$(TargetFrameworks);net10.0-browser</TargetFrameworks>
 		<XpfSingleProject>true</XpfSingleProject>
+		<WasmBuildNative>true</WasmBuildNative>
 
 		<!-- Necessary on .NET 10 Browser SDK -->
 		<RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
+
+		<!-- Size optimizations -->
+		<OptimizationPreference>Size</OptimizationPreference>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>None</DebugType>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<Resource Include="**\*.png"/>
 	</ItemGroup>
