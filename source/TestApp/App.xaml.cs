@@ -17,6 +17,13 @@ namespace TestApp
     /// </summary>
     public partial class App : Application
     {
+	    public static int Start()
+	    {
+		    var app = new App();
+		    app.InitializeComponent();
+		    return app.Run();
+	    }
+
         static App()
         {
 	        AvaloniaUI.Xpf.WinApiShim.WinApiShimSetup.AutoEnable();

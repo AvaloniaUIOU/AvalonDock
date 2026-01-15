@@ -1,22 +1,39 @@
-<Project Sdk="Xpf.Sdk/1.5.3">
+<Project Sdk="Xpf.Sdk/9999.0.0-localbuild">
 	<PropertyGroup>
+		<IncludeBrowser>true</IncludeBrowser>
 		<RootNamespace>TestApp</RootNamespace>
 		<TargetFrameworks>net10.0</TargetFrameworks>
 		<UseWPF>true</UseWPF>
-		<UseWindowsForms>true</UseWindowsForms>
 		<ApplicationIcon/>
-		<OutputType>WinExe</OutputType>
+		<OutputType>Exe</OutputType>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<StartupObject/>
 		<AssemblyName>TestApp</AssemblyName>
+		<WasmBuildNative>true</WasmBuildNative>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(IncludeBrowser)' == 'true'">
+		<TargetFrameworks>$(TargetFrameworks);net10.0-browser</TargetFrameworks>
+		<XpfSingleProject>true</XpfSingleProject>
+
+		<!-- Necessary on .NET 10 Browser SDK -->
+		<RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<Resource Include="**\*.png"/>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Components\AvalonDock.Themes.VS2010\AvalonDock.Themes.VS2010.csproj"/>
-		<ProjectReference Include="..\Components\AvalonDock.Themes.VS2013\AvalonDock.Themes.VS2013.csproj"/>
+		<TrimmerRootAssembly Include="TestApp" />
+		<TrimmerRootAssembly Include="AvalonDock" />
+<!--		<ProjectReference Include="..\Components\AvalonDock.Themes.VS2010\AvalonDock.Themes.VS2010.csproj"/>-->
+<!--		<ProjectReference Include="..\Components\AvalonDock.Themes.VS2013\AvalonDock.Themes.VS2013.csproj"/>-->
 		<ProjectReference Include="..\Components\AvalonDock\AvalonDock.csproj"/>
 		<RuntimeHostConfigurationOption Include="AvaloniaUI.Xpf.LicenseKey" Value="$(XpfLicenseKey)"/>
+		<RuntimeHostConfigurationOption Include="AvaloniaUI.Xpf.LogOutput" Value="console" />
+		<RuntimeHostConfigurationOption Include="AvaloniaUI.Xpf.LogLevel" Value="debug" />
+		<RuntimeHostConfigurationOption Include="AvaloniaUI.Xpf.LogAvalonia" Value="false" />
 	</ItemGroup>
+
 </Project>

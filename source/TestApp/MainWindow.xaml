@@ -65,9 +65,9 @@
             DocumentClosing="DockManager_DocumentClosing"
             IsVirtualizingAnchorable="True"
             IsVirtualizingDocument="True">
-            <DockingManager.Theme>
-                <Vs2013LightTheme />
-            </DockingManager.Theme>
+            <!-- <DockingManager.Theme> -->
+            <!--     <Vs2013LightTheme /> -->
+            <!-- </DockingManager.Theme> -->
             <DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
